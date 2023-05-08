@@ -1,0 +1,24 @@
+.disable-to-do {
+    text-decoration: line-through;
+    color: grey;
+    transition: color 0.8s;
+}
+
+.enable-to-do {
+    color: black;
+    text-decoration: none;
+}
+
+.flag-icon-props {
+    cursor: pointer;
+    background: #eeecec;
+    padding: 10px;
+    border-radius: 50%
+}
+
+.assignee-hover-effect:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    transition: transform 0.7s ease;
+    background-color: aquamarine !important;
+}
