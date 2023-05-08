@@ -4,14 +4,27 @@ import { Avatar, Checkbox, Modal, Popover } from "antd";
 import { store } from "../../Mst/TodoStore";
 import { observer } from "mobx-react-lite";
 
-function TodoList({ todo }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+interface Todo {
+  name: string;
+  done: boolean;
+  priority: number;
+  user: { name: string };
+  toggle: () => void;
+  setUser: (user: object) => void;
+}
 
-  const handleRemove = (todo) => {
+type TodoProps = {
+  todo: Todo;
+};
+
+function TodoList({ todo }: TodoProps) {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleRemove = (todo: Todo) => {
     store.removeTodo(todo);
   };
 
-  const handleOnChange = (todo) => {
+  const handleOnChange = (todo: Todo) => {
     todo.toggle();
   };
 
@@ -23,7 +36,7 @@ function TodoList({ todo }) {
     setIsModalOpen(false);
   };
 
-  function handleAssigneeClick(todo, user) {
+  function handleAssigneeClick(todo: Todo, user: object) {
     todo.setUser(user);
     console.log(todo.user);
     handleCancel();

@@ -1,11 +1,8 @@
-import React from 'react'
-import TodoView from '../TodoView'
+import React from "react";
+import TodoView from "../TodoView/index";
 
 const Home = () => {
+  return <TodoView />;
+};
 
-    return (
-        <TodoView />
-    )
-}
-
-export default Home
+export default Home;
