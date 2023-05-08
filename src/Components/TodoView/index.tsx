@@ -1,24 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import { Avatar, Button, Input, Modal, Select } from "antd";
 import { store } from "../../Mst/TodoStore";
 import { observer } from "mobx-react-lite";
 import { FlagOutlined, FlagFilled, UserOutlined } from "@ant-design/icons";
 import { Dropdown } from "antd";
-import TodoList from "../Todolist";
 import "./style.css";
+// import Todolist from "../Todolist";
+import Todolist from "../Todolist";
+
+// type User = {
+//   id: number;
+//   name: string;
+// };
+
+// type users = {};
 
 const TodoView = () => {
   // REACT USESTATE HOOKS
-  const inputRef = React.useRef("");
+  const inputRef = React.useRef<any>("");
   const [inputVal, setInputVal] = useState("");
-  const [priorityNum, setPriorityNum] = useState(0);
+  const [priorityNum, setPriorityNum] = useState("0");
   const [isPriority, setIsPriority] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [searchInp, setSearchInp] = React.useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchedTodos, setSearchedTodos] = React.useState([]);
-  const [users, setUsers] = React.useState([]);
-  const [assignee, setAssignee] = React.useState(null);
+  // const [users, setUsers] = React.useState<User[]>([]);
+  const [assignee, setAssignee] = React.useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // JSX DATA
@@ -52,11 +60,11 @@ const TodoView = () => {
     store.addTodo(inputVal, false, +priorityNum, assignee?.id);
     setInputVal("");
     setIsPriority(false);
-    setPriorityNum(0);
+    setPriorityNum("0");
     setAssignee(null);
   }
 
-  const handleKeyPress = (event) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleAddTodo();
     }
@@ -85,9 +93,9 @@ const TodoView = () => {
     setSelectedItems(value);
   };
 
-  const handleChangeSearch = (e) => {
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInp(e.target.value);
-    let searchedInputs = store.handleTodoSearch(searchInp);
+    let searchedInputs: any = store.handleTodoSearch(searchInp);
     setSearchedTodos(searchedInputs);
   };
 
@@ -103,15 +111,12 @@ const TodoView = () => {
   }, [searchInp]);
 
   useEffect(() => {
-    let data = store.handleFilteredTodos(selectedItems);
+    let data: any = store.handleFilteredTodos(selectedItems);
     setFilteredData(data);
   }, [selectedItems]);
 
   useEffect(() => {
-    store
-      .fetchData()
-      .then((res) => setUsers(res))
-      .catch((err) => console.log(err));
+    store.fetchData();
   }, []);
 
   return (
@@ -163,7 +168,6 @@ const TodoView = () => {
                   })}
                 </div>
               </Modal>
-              {/* </Popover> */}
               <Dropdown menu={{ items, onClick }}>
                 {isPriority ? (
                   <FlagFilled
@@ -217,38 +221,37 @@ const TodoView = () => {
         </div>
         {/* <h3>{store.getCompletedTodosLength} / {searchedTodos.length >= 1 ? searchedTodos.length : store.getTodoLength}</h3> */}
       </div>
-      {!searchInp.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginRight: "30px",
-          }}
-        >
-          <Select
-            mode="multiple"
-            placeholder="Select Filter"
-            value={selectedItems}
-            onChange={(value) => handleFilterChange(value)}
-            style={{ width: "120px" }}
-            options={OPTIONS}
-          />
-        </div>
-      )}
+      {/* {!searchInp.length > 0 && ( */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginRight: "30px",
+        }}
+      >
+        <Select
+          mode="multiple"
+          placeholder="Select Filter"
+          value={selectedItems}
+          onChange={(value) => handleFilterChange(value)}
+          style={{ width: "120px" }}
+          options={OPTIONS}
+        />
+      </div>
+      {/* )} */}
       {searchInp.length > 0
         ? searchedTodos.map((todo, index) => {
-            return <TodoList todo={todo} key={index} users={users} />;
+            return <Todolist todo={todo} key={index} />;
           })
         : filteredData
         ? filteredData.map((todo, index) => {
-            return <TodoList todo={todo} key={index} users={users} />;
+            return <Todolist todo={todo} key={index} />;
           })
         : store.todos.map((todo, index) => {
-            return <TodoList todo={todo} key={index} users={users} />;
+            return <Todolist todo={todo} key={index} />;
           })}
     </div>
   );
 };
-
 
 export default observer(TodoView);
